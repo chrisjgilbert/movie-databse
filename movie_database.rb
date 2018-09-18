@@ -14,7 +14,7 @@ module Prompt
 	def prompt(message, symbol=":::>")
 		print message
 		print symbol
-		gets.downcase.chomp
+		gets.chomp
 	end
 end
 
@@ -37,18 +37,16 @@ class Database
 	end
 
 	def show
-		puts "Your current database:"
 		@movie_database.each do |movie, rating|
-			puts "#{movie}".capitalize + ": #{rating}"
+			puts "#{movie}: #{rating}"
 		end
 	end
 
-	def delete(movie)
-
+	def delete(title)
+		@movie_database.delete(title)
+    puts "Movie deleted!"
 	end
 end
-
-
 
 class Movie
 	attr_accessor :rating, :title
@@ -79,6 +77,13 @@ if __FILE__ == $PROGRAM_NAME
 		when 'a'
 				database.add_to_database(Movie.new(prompt('What is the title of the film you would like to add? ')), prompt('What is the rating of the film you would like to add? ').to_i)
 		when 's'
+			puts "Current database:"
+			database.show
+		when 'd'
+			puts "Current database:"
+			database.show
+			database.delete(prompt('Which film would you like to delete?'))
+			puts "Updated database:"
 			database.show
 		end
 		prompt('Press Enter to continue ', ':-)')
