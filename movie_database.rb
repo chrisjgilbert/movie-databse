@@ -35,9 +35,13 @@ class Database
 		}
 	end
 
-def is_valid?(title)
-	@movie_database.include?(title) ? false : true
-end
+	def is_valid?(title)
+		@movie_database.include?(title) ? false : true
+	end
+
+	def valid_rating?(rating)
+		rating > 10 || rating < 0 ? false : true
+	end
 
 	def add(title, rating)
 		@movie_database[title] = rating
@@ -84,9 +88,12 @@ if __FILE__ == $PROGRAM_NAME
 			when 'a'	
 			movie = Movie.new(add_prompt('What is the title of the film you would like to add?'))
 			if mydb.is_valid?(movie.title) == true
-					mydb.add(movie.title, prompt('What rating with you give ' + movie.title + ' ?'))
-					puts "Your updated database:"
-					mydb.show
+				rating = prompt('What is your rating for ' + movie.title + '?').to_i
+					if mydb.valid_rating?(rating) == true
+						mydb.add(movie.title, rating)
+					else
+						puts "That rating is not between 1 and 10!"
+					end
 			else 
 				puts "That movie already exists!"
 			end
