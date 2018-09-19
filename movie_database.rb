@@ -106,13 +106,20 @@ if __FILE__ == $PROGRAM_NAME
 				mydb.show
 				movie = Movie.new(add_prompt('What is the title of the film you would like to update?'))
 				if mydb.is_valid?(movie.title) == false
-						mydb.update(movie.title, prompt('What rating would you give ' + movie.title + ' now?'))
+					rating = prompt('What is your rating for ' + movie.title + '?').to_i
+					if mydb.valid_rating?(rating) == true
+						mydb.add(movie.title, rating)
+					else
+						puts "That rating is not between 1 and 10!"			
+					end
 						puts "Your updated database:"
 						mydb.show
 				else
 					puts "That movie doesn't exist! Please add it!"
 				end
 			when 'd'
+				puts "Your current database:"
+				mydb.show
 				movie = Movie.new(add_prompt('What is the title of the film you would like to delete?'))
 				if mydb.is_valid?(movie.title) == false
 						mydb.delete(movie.title)
