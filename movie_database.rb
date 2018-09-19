@@ -4,52 +4,59 @@ module Menu
 		"Welcome to the Movie Database.
 		A) Add a movie to the database
 		S) View the movie database
-		U) Update a movie on the database
-		D) Delete a movie from the database
+		U) Update a movie's rating
+		or
 		Q) Quit"
 	end
 end
 
 module Prompt
-	def prompt(message, symbol=":::>")
+	def prompt(message, symbol=":::> ")
 		print message
 		print symbol
-		gets.chomp
+		gets.chomp.downcase
+	end
+
+	def add_prompt(message, symbol=":::> ")
+		print message
+		print symbol
+		title = gets.chomp.split.map(&:capitalize).join(' ')
 	end
 end
 
 # CLASSES
 class Database
-	attr_reader :movie_database
+	attr_accessor :movie_database, :title, :rating
 
 	def initialize
 		@movie_database = {
+			"Bond" => 5
 		}
 	end
 
-	def add_to_database(title, rating) # update method not detecing if movie already exists
-	  if @movie_database.key?(title)
-	    puts "That movie already exists!"
-	  else
-	    @movie_database[title] = rating
-	    puts "Movie added!"
-	  end
+def is_valid?(title)
+	@movie_database.include?(title) ? false : true
+end
+
+	def add(title, rating)
+		@movie_database[title] = rating
 	end
 
 	def show
-		@movie_database.each do |movie, rating|
-			puts "#{movie}: #{rating}"
+		@movie_database.each do |title, rating|
+			puts "#{title}: #{rating}"
 		end
 	end
 
-	def delete(title)
-		@movie_database.delete(title)
-    puts "Movie deleted!"
+	def update(title, rating)
+		@movie_database[title] = rating
 	end
+
+
 end
 
 class Movie
-	attr_accessor :rating, :title
+	attr_reader :title
 
 	def initialize(title)
 		@title = title
@@ -58,34 +65,42 @@ class Movie
 	def to_s
 		@title
 	end
-
-	def to_i
-		@rating
-	end
 end
-
 
 # PROGRAM RUNNER
 if __FILE__ == $PROGRAM_NAME
 	include Menu
 	include Prompt
 	# create new database
-	database = Database.new
+	mydb = Database.new
 	# welcome menu
 	until ['q'].include?(user_input = prompt(menu))
 		case user_input
-		when 'a'
-				database.add_to_database(Movie.new(prompt('What is the title of the film you would like to add? ')), prompt('What is the rating of the film you would like to add? ').to_i)
-		when 's'
-			puts "Current database:"
-			database.show
-		when 'd'
-			puts "Current database:"
-			database.show
-			database.delete(prompt('Which film would you like to delete?'))
-			puts "Updated database:"
-			database.show
+			# add movie
+			when 'a'	
+			movie = Movie.new(add_prompt('What is the title of the film you would like to add?'))
+			if mydb.is_valid?(movie.title) == true
+				mydb.add(movie.title, prompt('What rating with you give ' + movie.title + ' ?'))
+				puts "Your updated database:"
+				mydb.show
+			else 
+				puts "That movie already exists!"
+			end
+		# show movie
+			when 's'
+				puts "Your current database:"
+				mydb.show
+			when 'u'
+				puts "Your current database:"
+				mydb.show
+				mydb.update(add_prompt('Which movie woud you like to update?'), prompt('What rating would you like to give it?'))
+				puts "Your updated database:"
+				mydb.show
+			else
+				puts "I didn't catch that, please try again!"
 		end
 		prompt('Press Enter to continue ', ':-)')
 	end
+	puts "Goodbye!"
 end
+
