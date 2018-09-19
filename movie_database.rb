@@ -5,6 +5,7 @@ module Menu
 		A) Add a movie to the database
 		S) View the movie database
 		U) Update a movie's rating
+		D) Delete a movie from the database
 		or
 		Q) Quit"
 	end
@@ -52,6 +53,9 @@ end
 		@movie_database[title] = rating
 	end
 
+	def delete(title, rating)
+		
+	end
 
 end
 
@@ -80,9 +84,9 @@ if __FILE__ == $PROGRAM_NAME
 			when 'a'	
 			movie = Movie.new(add_prompt('What is the title of the film you would like to add?'))
 			if mydb.is_valid?(movie.title) == true
-				mydb.add(movie.title, prompt('What rating with you give ' + movie.title + ' ?'))
-				puts "Your updated database:"
-				mydb.show
+					mydb.add(movie.title, prompt('What rating with you give ' + movie.title + ' ?'))
+					puts "Your updated database:"
+					mydb.show
 			else 
 				puts "That movie already exists!"
 			end
@@ -93,9 +97,14 @@ if __FILE__ == $PROGRAM_NAME
 			when 'u'
 				puts "Your current database:"
 				mydb.show
-				mydb.update(add_prompt('Which movie woud you like to update?'), prompt('What rating would you like to give it?'))
-				puts "Your updated database:"
-				mydb.show
+				movie = Movie.new(add_prompt('What is the title of the film you would like to update?'))
+				if mydb.is_valid?(movie.title) == false
+						mydb.update(movie.title, prompt('What rating would you give ' + movie.title + ' now?'))
+						puts "Your updated database:"
+						mydb.show
+				else
+					puts "That movie doesn't exist! Please add it!"
+				end
 			else
 				puts "I didn't catch that, please try again!"
 		end
