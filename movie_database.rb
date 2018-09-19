@@ -53,8 +53,8 @@ end
 		@movie_database[title] = rating
 	end
 
-	def delete(title, rating)
-		
+	def delete(title)
+		@movie_database.delete(title)
 	end
 
 end
@@ -104,6 +104,15 @@ if __FILE__ == $PROGRAM_NAME
 						mydb.show
 				else
 					puts "That movie doesn't exist! Please add it!"
+				end
+			when 'd'
+				movie = Movie.new(add_prompt('What is the title of the film you would like to delete?'))
+				if mydb.is_valid?(movie.title) == false
+						mydb.delete(movie.title)
+						puts "Your updated database:"
+						mydb.show
+				else
+					puts "That movie doesn't exist - which is maybe a good thing if you didn't rate it!"
 				end
 			else
 				puts "I didn't catch that, please try again!"
