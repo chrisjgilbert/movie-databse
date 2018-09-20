@@ -15,13 +15,13 @@ module Prompt
 	def prompt(message, symbol=":::> ")
 		print message
 		print symbol
-		gets.chomp.downcase
+		gets.chomp.downcase.strip
 	end
 
 	def add_prompt(message, symbol=":::> ")
 		print message
 		print symbol
-		title = gets.chomp.split.map(&:capitalize).join(' ')
+		title = gets.chomp.strip.split.map(&:capitalize).join(' ')
 	end
 end
 
@@ -30,9 +30,7 @@ class Database
 	attr_accessor :movie_database, :title, :rating
 
 	def initialize
-		@movie_database = {
-			"Bond" => 5
-		}
+		@movie_database = {}
 	end
 
 	def is_valid?(title)
@@ -88,7 +86,7 @@ if __FILE__ == $PROGRAM_NAME
 			when 'a'	
 			movie = Movie.new(add_prompt('What is the title of the film you would like to add?'))
 			if mydb.is_valid?(movie.title) == true
-				rating = prompt('What is your rating for ' + movie.title + '?').to_i
+				rating = prompt('What is your rating for ' + movie.title + '? (rating must be between 1 and 10)').to_i
 					if mydb.valid_rating?(rating) == true
 						mydb.add(movie.title, rating)
 					else
@@ -106,7 +104,7 @@ if __FILE__ == $PROGRAM_NAME
 				mydb.show
 				movie = Movie.new(add_prompt('What is the title of the film you would like to update?'))
 				if mydb.is_valid?(movie.title) == false
-					rating = prompt('What is your rating for ' + movie.title + '?').to_i
+					rating = prompt('What is your rating for ' + movie.title + '? (rating must be between 1 and 10)').to_i
 					if mydb.valid_rating?(rating) == true
 						mydb.add(movie.title, rating)
 					else
